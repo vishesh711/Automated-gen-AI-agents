@@ -1,10 +1,11 @@
-import requests
 import json
 import os
 from datetime import datetime
 
+import requests
+
 try:
-    from config import WEATHER_API_KEY, NEWS_API_KEY
+    from config import NEWS_API_KEY, WEATHER_API_KEY
 except ImportError:
     WEATHER_API_KEY = os.environ.get("WEATHER_API_KEY", "")
     NEWS_API_KEY = os.environ.get("NEWS_API_KEY", "")

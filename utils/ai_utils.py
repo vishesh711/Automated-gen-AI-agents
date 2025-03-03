@@ -1,7 +1,8 @@
-import os
 import json
+import os
+from typing import Any, Dict, Optional
+
 import requests
-from typing import Dict, Any, Optional
 
 try:
     from config import OPENAI_API_KEY

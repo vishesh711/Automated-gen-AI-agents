@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Sam.AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-bg: #1e1e2e;
+            --main-bg: #282836;
+            --border-color: #3a3a4a;
+            --primary-color: #6c5ce7;
+            --primary-hover: #5b4bc4;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --text-muted: #808080;
+            --message-bg-user: #2d2d3d;
+            --message-bg-ai: #2a2a38;
+            --button-secondary: #3a3a4a;
+            --input-bg: #2d2d3d;
+            --chat-bubble-user: #3a3a4a;
+            --chat-bubble-ai: #2d2d3d;
+            --chat-bubble-shadow: rgba(0, 0, 0, 0.2);
+            --success-color: #00b894;
+            --error-color: #ff7675;
+            --warning-color: #fdcb6e;
+        }
+        
+        body {
+            background-color: var(--main-bg);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+        }
+        
+        .sidebar {
+            background-color: var(--sidebar-bg);
+            width: 260px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            background-color: var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .logo-text {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .new-chat-btn {
+            margin: 5px 15px 15px;
+            padding: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .new-chat-btn:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        .new-chat-btn i {
+            margin-right: 8px;
+        }
+        
+        .search-container {
+            padding: 0 15px 15px;
+        }
+        
+        .search-box {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-box i {
+            color: var(--text-muted);
+            margin-right: 8px;
+        }
+        
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            width: 100%;
+            outline: none;
+        }
+        
+        .search-box input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .sidebar-categories {
+            padding: 0 15px;
+            margin-bottom: 15px;
+        }
+        
+        .category-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+        
+        .category-item i {
+            width: 20px;
+            margin-right: 10px;
+        }
+        
+        .category-item .count {
+            margin-left: auto;
+            color: var(--text-muted);
+        }
+        
+        .recent-chats {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 15px;
+        }
+        
+        .chat-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            color: var(--text-secondary);
+            cursor: pointer;
+            margin-bottom: 5px;
+        }
+        
+        .chat-item i {
+            width: 20px;
+            margin-right: 10px;
+            color: var(--text-muted);
+        }
+        
+        .chat-item span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+        }
+        
+        .chat-item .chat-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-left: 10px;
+        }
+        
+        .small-new-chat-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        
+        .new-chat-button {
+            padding: 10px 0;
+        }
+        
+        .sidebar-footer {
+            padding: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .footer-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+        
+        .footer-item:hover {
+            color: var(--text-primary);
+        }
+        
+        .footer-item i {
+            width: 20px;
+            margin-right: 10px;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .avatar {
+            width: 30px;
+            height: 30px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .name {
+            font-weight: 500;
+        }
+        
+        .status {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .settings-button {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .settings-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .settings-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+        
+        .settings-container {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        
+        .settings-section {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .settings-section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .settings-section-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 15px;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
+            outline: none;
+        }
+        
+        .form-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+        
+        .form-switch {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--button-secondary);
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .btn {
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: 10px 20px;
+            font-size: 14px;
+            line-height: 1.5;
+            border-radius: 8px;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            color: white;
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+        }
+        
+        .btn-secondary {
+            color: var(--text-primary);
+            background-color: var(--button-secondary);
+            border-color: var(--button-secondary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(58, 58, 74, 0.8);
+        }
+        
+        .btn-danger {
+            color: white;
+            background-color: var(--error-color);
+            border-color: var(--error-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #e74c3c;
+        }
+        
+        .settings-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .api-key-container {
+            position: relative;
+        }
+        
+        .api-key-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+        
+        .danger-zone {
+            border: 1px solid var(--error-color);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .danger-zone-title {
+            color: var(--error-color);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .success-message, .error-message {
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .success-message {
+            background-color: rgba(0, 184, 148, 0.1);
+            border: 1px solid var(--success-color);
+            color: var(--success-color);
+        }
+        
+        .error-message {
+            background-color: rgba(255, 118, 117, 0.1);
+            border: 1px solid var(--error-color);
+            color: var(--error-color);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">S</div>
+                <div class="logo-text">Sam.AI</div>
+            </div>
+        </div>
+        
+        <button class="new-chat-btn" id="newChatBtn">
+            <i class="fas fa-plus"></i> New Chat
+        </button>
+        
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search" id="searchInput">
+            </div>
+        </div>
+        
+        <div class="sidebar-categories">
+            <div class="category-item">
+                <i class="fas fa-folder"></i>
+                <span>Folder</span>
+                <span class="count">8</span>
+            </div>
+            
+            <div class="category-item">
+                <i class="fas fa-star"></i>
+                <span>Favorite</span>
+                <span class="count">15</span>
+            </div>
+            
+            <div class="category-item">
+                <i class="fas fa-archive"></i>
+                <span>Archive</span>
+                <span class="count">36</span>
+            </div>
+        </div>
+        
+        <div class="recent-chats" id="recentChats">
+            <!-- Recent chats will be populated here -->
+        </div>
+        
+        <div class="sidebar-footer">
+            <a href="/settings" class="footer-item active">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+            
+            <a href="/help" class="footer-item">
+                <i class="fas fa-question-circle"></i>
+                <span>Help</span>
+            </a>
+            
+            <div class="user-profile">
+                <div class="avatar">
+                    <span>V</span>
+                </div>
+                <div class="user-info">
+                    <div class="name">vishesh</div>
+                    <div class="status">Pro account</div>
+                </div>
+                <button class="settings-button">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="settings-header">
+            <div class="settings-title">Settings</div>
+        </div>
+        
+        <div class="settings-container">
+            <div id="successMessage" class="success-message">
+                <i class="fas fa-check-circle"></i> Settings saved successfully!
+            </div>
+            
+            <div id="errorMessage" class="error-message">
+                <i class="fas fa-exclamation-circle"></i> <span id="errorText">An error occurred.</span>
+            </div>
+            
+            <div class="settings-section">
+                <div class="settings-section-title">
+                    <i class="fas fa-user"></i> Account Settings
+                </div>
+                
+                <form id="accountSettingsForm">
+                    <div class="form-group">
+                        <label for="displayName" class="form-label">Display Name</label>
+                        <input type="text" id="displayName" class="form-control" placeholder="Your display name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" id="email" class="form-control" placeholder="Your email address" readonly>
+                        <div class="form-text">Email address cannot be changed.</div>
+                    </div>
+                    
+                    <div class="settings-actions">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="settings-section">
+                <div class="settings-section-title">
+                    <i class="fas fa-lock"></i> Security
+                </div>
+                
+                <form id="securitySettingsForm">
+                    <div class="form-group">
+                        <label for="currentPassword" class="form-label">Current Password</label>
+                        <input type="password" id="currentPassword" class="form-control" placeholder="Enter your current password">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newPassword" class="form-label">New Password</label>
+                        <input type="password" id="newPassword" class="form-control" placeholder="Enter new password">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                        <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm new password">
+                    </div>
+                    
+                    <div class="settings-actions">
+                        <button type="submit" class="btn btn-primary">Update Password</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="settings-section">
+                <div class="settings-section-title">
+                    <i class="fas fa-sliders-h"></i> Preferences
+                </div>
+                
+                <form id="preferencesForm">
+                    <div class="form-switch">
+                        <span>Enable Web Search</span>
+                        <label class="switch">
+                            <input type="checkbox" id="enableWebSearch" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="form-switch">
+                        <span>Enable Notifications</span>
+                        <label class="switch">
+                            <input type="checkbox" id="enableNotifications">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="form-switch">
+                        <span>Save Chat History</span>
+                        <label class="switch">
+                            <input type="checkbox" id="saveChatHistory" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-actions">
+                        <button type="submit" class="btn btn-primary">Save Preferences</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="settings-section">
+                <div class="settings-section-title">
+                    <i class="fas fa-key"></i> API Keys
+                </div>
+                
+                <form id="apiKeysForm">
+                    <div class="form-group">
+                        <label for="openaiApiKey" class="form-label">OpenAI API Key</label>
+                        <div class="api-key-container">
+                            <input type="password" id="openaiApiKey" class="form-control" placeholder="Enter your OpenAI API key">
+                            <button type="button" class="api-key-toggle" onclick="toggleApiKeyVisibility('openaiApiKey')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-text">Your API key is stored securely and never shared.</div>
+                    </div>
+                    
+                    <div class="settings-actions">
+                        <button type="submit" class="btn btn-primary">Save API Keys</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="settings-section">
+                <div class="settings-section-title">
+                    <i class="fas fa-exclamation-triangle"></i> Danger Zone
+                </div>
+                
+                <div class="danger-zone">
+                    <div class="danger-zone-title">Delete Account</div>
+                    <p>Once you delete your account, there is no going back. Please be certain.</p>
+                    <button id="deleteAccountBtn" class="btn btn-danger">Delete Account</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fetch user info
+            fetchUserInfo();
+            
+            // Setup form submissions
+            setupFormSubmissions();
+            
+            // Setup delete account button
+            setupDeleteAccount();
+        });
+        
+        function fetchUserInfo() {
+            fetch('/api/user_info')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.logged_in) {
+                        // Update sidebar user info
+                        document.querySelector('.name').textContent = data.name;
+                        document.querySelector('.status').textContent = data.status || 'Active User';
+                        
+                        // Update form fields
+                        document.getElementById('displayName').value = data.name;
+                        document.getElementById('email').value = data.email;
+                    } else {
+                        // Redirect to login if not logged in
+                        window.location.href = '/login';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching user info:', error);
+                    showError('Failed to load user information');
+                });
+        }
+        
+        function setupFormSubmissions() {
+            // Account settings form
+            document.getElementById('accountSettingsForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const displayName = document.getElementById('displayName').value;
+                
+                fetch('/api/update_profile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name: displayName })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showSuccess('Profile updated successfully');
+                        // Update sidebar display name
+                        document.querySelector('.name').textContent = displayName;
+                    } else {
+                        showError(data.message || 'Failed to update profile');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError('An error occurred while updating profile');
+                });
+            });
+            
+            // Security settings form
+            document.getElementById('securitySettingsForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                if (newPassword !== confirmPassword) {
+                    showError('New passwords do not match');
+                    return;
+                }
+                
+                fetch('/api/update_password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        current_password: currentPassword,
+                        new_password: newPassword
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showSuccess('Password updated successfully');
+                        // Clear password fields
+                        document.getElementById('currentPassword').value = '';
+                        document.getElementById('newPassword').value = '';
+                        document.getElementById('confirmPassword').value = '';
+                    } else {
+                        showError(data.message || 'Failed to update password');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError('An error occurred while updating password');
+                });
+            });
+            
+            // Preferences form
+            document.getElementById('preferencesForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const enableWebSearch = document.getElementById('enableWebSearch').checked;
+                const enableNotifications = document.getElementById('enableNotifications').checked;
+                const saveChatHistory = document.getElementById('saveChatHistory').checked;
+                
+                fetch('/api/update_preferences', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        enable_web_search: enableWebSearch,
+                        enable_notifications: enableNotifications,
+                        save_chat_history: saveChatHistory
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showSuccess('Preferences updated successfully');
+                    } else {
+                        showError(data.message || 'Failed to update preferences');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError('An error occurred while updating preferences');
+                });
+            });
+            
+            // API Keys form
+            document.getElementById('apiKeysForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const openaiApiKey = document.getElementById('openaiApiKey').value;
+                
+                fetch('/api/update_api_keys', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        openai_api_key: openaiApiKey
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showSuccess('API keys updated successfully');
+                    } else {
+                        showError(data.message || 'Failed to update API keys');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError('An error occurred while updating API keys');
+                });
+            });
+        }
+        
+        function setupDeleteAccount() {
+            document.getElementById('deleteAccountBtn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                    fetch('/api/delete_account', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Your account has been deleted. You will be redirected to the login page.');
+                            window.location.href = '/login';
+                        } else {
+                            showError(data.message || 'Failed to delete account');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showError('An error occurred while deleting account');
+                    });
+                }
+            });
+        }
+        
+        function toggleApiKeyVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+        
+        function showSuccess(message) {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            successMessage.classList.add('fade-in');
+            
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        }
+        
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorMessage.style.display = 'block';
+            errorMessage.classList.add('fade-in');
+            
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html> 

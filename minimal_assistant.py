@@ -1,10 +1,10 @@
-import tkinter as tk
-from tkinter import scrolledtext
-import threading
-import sys
-import webbrowser
 import os
+import sys
+import threading
+import tkinter as tk
+import webbrowser
 from datetime import datetime
+from tkinter import scrolledtext
 
 
 class MinimalAssistant:

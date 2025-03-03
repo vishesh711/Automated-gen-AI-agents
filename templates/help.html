@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help - Sam.AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-bg: #1e1e2e;
+            --main-bg: #282836;
+            --border-color: #3a3a4a;
+            --primary-color: #6c5ce7;
+            --primary-hover: #5b4bc4;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --text-muted: #808080;
+            --input-bg: #2d2d3d;
+        }
+        
+        body {
+            background-color: var(--main-bg);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+        }
+        
+        .sidebar {
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            width: 260px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        
+        .help-section {
+            margin-bottom: 40px;
+        }
+        
+        .help-section h2 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        
+        .help-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .help-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .help-card p {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+        
+        .help-card ul {
+            padding-left: 20px;
+            color: var(--text-secondary);
+        }
+        
+        .help-card code {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <!-- Replace the sidebar in help.html with the same one -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">S</div>
+                <div class="logo-text">Sam.AI</div>
+            </div>
+        </div>
+        
+        <button class="new-chat-btn" id="newChatBtn">
+            <i class="fas fa-plus"></i> New Chat
+        </button>
+        
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search" id="searchInput">
+            </div>
+        </div>
+        
+        <div class="sidebar-categories">
+            <div class="category-item">
+                <i class="fas fa-folder"></i>
+                <span>Folder</span>
+                <span class="count">8</span>
+            </div>
+            
+            <div class="category-item">
+                <i class="fas fa-star"></i>
+                <span>Favorite</span>
+                <span class="count">15</span>
+            </div>
+            
+            <div class="category-item">
+                <i class="fas fa-archive"></i>
+                <span>Archive</span>
+                <span class="count">36</span>
+            </div>
+        </div>
+        
+        <div class="recent-chats" id="recentChats">
+            <!-- Recent chats will be populated here -->
+        </div>
+        
+        <div class="sidebar-footer">
+            <a href="/settings" class="footer-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+            
+            <a href="/help" class="footer-item active">
+                <i class="fas fa-question-circle"></i>
+                <span>Help</span>
+            </a>
+            
+            <div class="user-profile">
+                <div class="avatar">
+                    <span>V</span>
+                </div>
+                <div class="user-info">
+                    <div class="name">vishesh</div>
+                    <div class="status">Pro account</div>
+                </div>
+                <button class="settings-button">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <h1>Help Center</h1>
+        
+        <div class="help-section">
+            <h2>Getting Started</h2>
+            
+            <div class="help-card">
+                <h3>What is Sam.AI?</h3>
+                <p>Sam.AI is your personal AI assistant that helps you with various tasks, from answering questions to helping with research, writing, and more.</p>
+            </div>
+            
+            <div class="help-card">
+                <h3>Basic Commands</h3>
+                <p>You can interact with Sam.AI using natural language. Here are some examples:</p>
+                <ul>
+                    <li>"Tell me about quantum computing"</li>
+                    <li>"Write a blog post about sustainable energy"</li>
+                    <li>"Summarize this article: [paste URL]"</li>
+                    <li>"What's the weather in New York?"</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="help-section">
+            <h2>Advanced Features</h2>
+            
+            <div class="help-card">
+                <h3>Web Browsing</h3>
+                <p>Sam.AI can browse the web for you. Try commands like:</p>
+                <ul>
+                    <li>"Search for latest AI news"</li>
+                    <li>"Find tutorials on machine learning"</li>
+                    <li>"Look up the recipe for chocolate chip cookies"</li>
+                </ul>
+            </div>
+            
+            <div class="help-card">
+                <h3>Content Generation</h3>
+                <p>Sam.AI can help you create various types of content:</p>
+                <ul>
+                    <li>"Write an email to my boss requesting time off"</li>
+                    <li>"Create a marketing plan for a new product"</li>
+                    <li>"Generate a list of ideas for my YouTube channel"</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="help-section">
+            <h2>Account & Settings</h2>
+            
+            <div class="help-card">
+                <h3>Managing Your Account</h3>
+                <p>You can manage your account settings by clicking on the Settings icon in the sidebar.</p>
+            </div>
+            
+            <div class="help-card">
+                <h3>API Integration</h3>
+                <p>To use external APIs with Sam.AI, go to Settings and add your API keys in the API Keys section.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Add any JavaScript needed for the help page
+    </script>
+</body>
+</html> 

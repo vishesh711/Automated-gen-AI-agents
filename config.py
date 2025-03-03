@@ -5,6 +5,7 @@
 # Get one at: https://platform.openai.com/api-keys
 # OPENAI_API_KEY = ""
 
+
 # OpenWeatherMap API key
 # Get one at: https://openweathermap.org/api
 WEATHER_API_KEY = ""

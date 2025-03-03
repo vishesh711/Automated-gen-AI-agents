@@ -48,7 +48,39 @@ A powerful personal AI assistant with a chat interface that combines web automat
      - OpenAI API key (for GPT-4o)
      - OpenWeatherMap API key (for weather information)
      - News API key (for news headlines)
+4. Run the main application:
+   ```
+   python web_agent.py
+   ```
 
 ### Usage
 
 Run the main application:
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit pull requests.
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a pull request
+
+## 📜 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🔐 Security Note
+
+Never commit your API keys. Always use environment variables or a secure configuration file for sensitive data.
+
+## ⚠️ Disclaimer
+
+This tool is for educational purposes. Be responsible when using web automation features and respect websites' terms of service.
+
+## 🙏 Acknowledgments
+
+- OpenAI for GPT API
+- Selenium for web automation
+- Python community for various libraries

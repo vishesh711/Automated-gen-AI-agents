@@ -3,38 +3,42 @@ import os
 from typing import Any, Dict, Optional
 
 import requests
+from groq import Groq
 
 try:
-    from config import OPENAI_API_KEY
+    from config import GROQ_API_KEY
 except ImportError:
-    OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
+    GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
 
-class GPT4oAssistant:
-    """Class to handle interactions with OpenAI's GPT-4o API."""
+class GroqAssistant:
+    """Class to handle interactions with Groq's fast LLM API."""
 
     def __init__(self, api_key: Optional[str] = None):
-        """Initialize the GPT-4o assistant with API key."""
-        self.api_key = api_key or OPENAI_API_KEY
+        """Initialize the Groq assistant with API key."""
+        self.api_key = api_key or GROQ_API_KEY
         if not self.api_key:
             print(
-                "Warning: OpenAI API key not found. GPT-4o functionality will be limited."
+                "Warning: Groq API key not found. AI functionality will be limited."
             )
 
-        self.api_url = "https://api.openai.com/v1/chat/completions"
-        self.model = "gpt-4o"
-        self.headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {self.api_key}",
-        }
+        # Initialize the Groq client
+        try:
+            self.client = Groq(api_key=self.api_key) if self.api_key else None
+        except Exception as e:
+            print(f"Error initializing Groq client: {e}")
+            self.client = None
 
+        # Model configuration - using a fast and capable model
+        self.model = "deepseek-r1-distill-llama-70b"  # Fast reasoning model with distilled capabilities
+        
         # Initialize conversation history
         self.conversation_history = []
         self.max_history_length = 10  # Maximum number of message pairs to keep
 
     def ask(self, query: str, system_prompt: Optional[str] = None) -> str:
         """
-        Send a query to GPT-4o and get a response.
+        Send a query to Groq and get a response.
 
         Args:
             query: The user's question or command
@@ -43,8 +47,8 @@ class GPT4oAssistant:
         Returns:
             The model's response as a string
         """
-        if not self.api_key:
-            return "I can't process this request because the OpenAI API key is not configured."
+        if not self.client:
+            return "I can't process this request because the Groq API key is not configured."
 
         # Prepare messages
         messages = []
@@ -70,43 +74,33 @@ class GPT4oAssistant:
         messages.append({"role": "user", "content": query})
 
         try:
-            # Prepare the request payload
-            payload = {
-                "model": self.model,
-                "messages": messages,
-                "temperature": 0.7,
-                "max_tokens": 1000,
-            }
+            # Send the request to Groq
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                temperature=0.7,
+                max_tokens=1000,
+            )
 
-            # Send the request
-            response = requests.post(self.api_url, headers=self.headers, json=payload)
-            response_data = response.json()
+            # Extract the response text
+            assistant_response = response.choices[0].message.content
 
-            if response.status_code == 200:
-                # Extract the response text
-                assistant_response = response_data["choices"][0]["message"]["content"]
+            # Update conversation history
+            self.conversation_history.append({"role": "user", "content": query})
+            self.conversation_history.append(
+                {"role": "assistant", "content": assistant_response}
+            )
 
-                # Update conversation history
-                self.conversation_history.append({"role": "user", "content": query})
-                self.conversation_history.append(
-                    {"role": "assistant", "content": assistant_response}
-                )
+            # Trim history if it gets too long
+            if len(self.conversation_history) > self.max_history_length * 2:
+                self.conversation_history = self.conversation_history[
+                    -self.max_history_length * 2 :
+                ]
 
-                # Trim history if it gets too long
-                if len(self.conversation_history) > self.max_history_length * 2:
-                    self.conversation_history = self.conversation_history[
-                        -self.max_history_length * 2 :
-                    ]
-
-                return assistant_response
-            else:
-                error_message = response_data.get("error", {}).get(
-                    "message", "Unknown error"
-                )
-                return f"Error from OpenAI API: {error_message}"
+            return assistant_response
 
         except Exception as e:
-            return f"Error communicating with OpenAI API: {str(e)}"
+            return f"Error communicating with Groq API: {str(e)}"
 
     def clear_history(self):
         """Clear the conversation history."""
@@ -156,3 +150,7 @@ class GPT4oAssistant:
         except json.JSONDecodeError:
             # If the response isn't valid JSON, return a default
             return {"command_type": "chat", "parameters": {"message": command}}
+
+
+# Keep backward compatibility by creating an alias
+GPT4oAssistant = GroqAssistant

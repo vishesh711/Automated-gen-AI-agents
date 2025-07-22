@@ -59,14 +59,23 @@ def open_website(browser, url):
 
 def search_youtube(browser, query):
     """Search for a video on YouTube."""
+    print(f"🔍 Opening YouTube...")
     open_website(browser, "youtube.com")
-    time.sleep(2)  # Wait for page to load
+    time.sleep(3)  # Wait for page to load
+    
+    # Bring browser to foreground
+    browser.switch_to.window(browser.current_window_handle)
 
     try:
+        print(f"🔍 Searching for: {query}")
         search_box = browser.find_element(By.NAME, "search_query")
         search_box.clear()
         search_box.send_keys(query)
         search_box.send_keys(Keys.RETURN)
+        
+        print(f"✅ Search completed! Browser will stay open for 5 seconds.")
+        time.sleep(5)  # Keep browser open so user can see results
+        
         return True
     except Exception as e:
         print(f"Error searching YouTube: {e}")

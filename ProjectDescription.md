@@ -21,7 +21,7 @@ The assistant then automatically performs these actions for them by:
 
 ## How It Works (In Simple Terms):
 
-1. **Command Understanding**: The system uses both simple pattern matching (regex) and AI (GPT-4o) to figure out what the user wants to do
+1. **Command Understanding**: The system uses both simple pattern matching (regex) and AI (Groq's fast LLM) to figure out what the user wants to do
 
 2. **Web Automation**: Once it understands the command, it uses Selenium WebDriver to control a web browser - essentially having a "robot" that can click buttons, fill forms, and navigate websites
 

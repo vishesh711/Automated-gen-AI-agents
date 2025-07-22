@@ -1270,54 +1270,7 @@
             updateUserInfo();
         });
         
-        // Update the sendMessage function to handle more intelligent responses
-        function sendMessage() {
-            const userInput = document.getElementById('userInput').value.trim();
-            if (!userInput) return;
-            
-            // Add user message to chat
-            addUserMessage(userInput);
-            
-            // Show typing indicator
-            showTypingIndicator();
-            
-            // Process command with improved intelligence
-            fetch('/api/chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ message: userInput })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Remove typing indicator
-                hideTypingIndicator();
-                
-                // Add AI response with a slight delay for natural feel
-                setTimeout(() => {
-                    addAIMessage(data.response);
-                    
-                    // If the response contains a URL, make it clickable
-                    const lastMessage = document.querySelector('.message-group:last-child .message-content');
-                    if (lastMessage) {
-                        const urlRegex = /(https?:\/\/[^\s]+)/g;
-                        lastMessage.innerHTML = lastMessage.innerHTML.replace(
-                            urlRegex, 
-                            '<a href="$1" target="_blank" class="message-link">$1</a>'
-                        );
-                    }
-                    
-                    // Add suggestion chips for common follow-ups based on the context
-                    addSuggestionChips(data.response);
-                }, 300);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                hideTypingIndicator();
-                addSystemMessage('Sorry, there was an error processing your request.');
-            });
-        }
+        // Removed duplicate sendMessage function - using the original one that calls processUserMessage
         
         // Add this function to update user info in the sidebar
         function updateUserInfo() {

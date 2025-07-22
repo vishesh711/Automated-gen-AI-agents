@@ -8,7 +8,7 @@ from functools import wraps
 
 from flask import Flask, jsonify, redirect, render_template, request, session, url_for
 
-from utils.ai_utils import GPT4oAssistant
+from utils.ai_utils import GroqAssistant
 from utils.api_utils import get_news, get_notes, get_weather, save_note
 from utils.web_utils import (
     click_button,
@@ -27,7 +27,7 @@ from utils.web_utils import (
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)  # Generate a secure secret key
-SKIP_BROWSER = True  # Set to False to enable web automation
+SKIP_BROWSER = False  # Set to False to enable web automation
 
 # Simulated user database (replace with a real database in production)
 users = {
@@ -56,12 +56,13 @@ class CommandProcessor:
         # Command patterns for better recognition
         self.command_patterns = {
             "youtube": [
-                r'(?:search|find|look\s+for|show)?\s*(?:on)?\s*youtube\s+(?:for)?\s*["\']?([^"\']+)["\']?',
+                r'(?:open\s+)?(?:youtube|yt)(?:\s+and)?\s+(?:search\s+(?:for\s+)?)?["\']?([^"\']+?)["\']?(?:\s+on\s+youtube)?$',
+                r'(?:search|find|look\s+for)?\s*(?:on\s+)?youtube\s+(?:for\s+)?["\']?([^"\']+)["\']?',
                 r'youtube\s+(?:search|find)?\s*["\']?([^"\']+)["\']?',
-                r'find\s+videos?\s+(?:of|about|on)?\s*["\']?([^"\']+)["\']?',
+                r'find\s+videos?\s+(?:of|about|on)?\s*["\']?([^"\']+)["\']?(?:\s+on\s+youtube)?',
             ],
             "google": [
-                r'(?:search|find|look\s+for)?\s*(?:on)?\s*google\s+(?:for)?\s*["\']?([^"\']+)["\']?',
+                r'(?:search|find|look\s+for)?\s*(?:on\s+)?google\s+(?:for\s+)?["\']?([^"\']+)["\']?',
                 r'google\s+(?:search|find)?\s*["\']?([^"\']+)["\']?',
                 r'search\s+(?:for|about)?\s*["\']?([^"\']+)["\']?',
             ],
@@ -119,14 +120,14 @@ class WebAssistant:
         self.command_processor = CommandProcessor()
         # Initialize AI assistant
         try:
-            self.ai_assistant = GPT4oAssistant()
+            self.ai_assistant = GroqAssistant()
         except Exception as e:
             print(f"Error initializing AI assistant: {e}")
-            # Create a fallback method if GPT4oAssistant doesn't have process_command
+            # Create a fallback method if GroqAssistant doesn't have process_command
             self.ai_assistant = self._create_fallback_assistant()
 
     def _create_fallback_assistant(self):
-        """Create a fallback assistant if GPT4oAssistant fails to initialize"""
+        """Create a fallback assistant if GroqAssistant fails to initialize"""
 
         class FallbackAssistant:
             def process_command(self, text):
@@ -142,15 +143,23 @@ class WebAssistant:
         if extracted["command"] == "youtube":
             query = extracted["query"]
             if SKIP_BROWSER:
-                return f"I would search YouTube for '{query}', but web automation is disabled."
+                # Provide a clickable link as fallback
+                youtube_url = f"https://www.youtube.com/results?search_query={query.replace(' ', '+')}"
+                return f"I would search YouTube for '{query}', but web automation is disabled. You can click here to search manually: {youtube_url}"
             else:
-                search_youtube(self.browser, query)
-                return f"Searching YouTube for '{query}'."
+                print(f"🚀 Starting YouTube automation for: {query}")
+                success = search_youtube(self.browser, query)
+                if success:
+                    return f"✅ Successfully opened YouTube and searched for '{query}'! Check your browser window for the results."
+                else:
+                    return f"❌ There was an issue with the YouTube search, but I tried to search for '{query}'."
 
         elif extracted["command"] == "google":
             query = extracted["query"]
             if SKIP_BROWSER:
-                return f"I would search Google for '{query}', but web automation is disabled."
+                # Provide a clickable link as fallback
+                google_url = f"https://www.google.com/search?q={query.replace(' ', '+')}"
+                return f"I would search Google for '{query}', but web automation is disabled. You can click here to search manually: {google_url}"
             else:
                 search_google(self.browser, query)
                 return f"Searching Google for '{query}'."
@@ -177,14 +186,9 @@ class WebAssistant:
         # If pattern matching fails or it's a chat command, use AI to understand
         else:
             try:
-                # Try to use the AI assistant
-                if hasattr(self.ai_assistant, "process_command"):
-                    return self.ai_assistant.process_command(command_text)
-                elif hasattr(self.ai_assistant, "generate_response"):
-                    return self.ai_assistant.generate_response(command_text)
-                else:
-                    # Fallback response if no appropriate method exists
-                    return f"I understood your message: '{command_text}', but I'm not sure how to respond appropriately."
+                # Use the AI assistant to process the command
+                response = self.ai_assistant.ask(command_text)
+                return response
             except Exception as e:
                 print(f"Error processing with AI: {e}")
                 return f"I received your message, but I'm having trouble processing it right now."
@@ -373,7 +377,7 @@ def update_preferences():
 @login_required
 def update_api_keys():
     data = request.json
-    openai_api_key = data.get("openai_api_key")
+    groq_api_key = data.get("groq_api_key")
 
     # In a real app, you would securely store the API key
     # For now, we'll just return success

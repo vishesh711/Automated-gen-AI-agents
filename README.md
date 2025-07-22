@@ -1,10 +1,10 @@
-# AI Personal Assistant with GPT-4o
+# AI Personal Assistant with Groq
 
-A powerful personal AI assistant with a chat interface that combines web automation capabilities with the intelligence of OpenAI's GPT-4o. This assistant can automate web tasks like browsing websites, searching YouTube, and surfing the web, while also providing intelligent responses to your questions and requests.
+A powerful personal AI assistant with a chat interface that combines web automation capabilities with the fast inference speed of Groq's LLM API. This assistant can automate web tasks like browsing websites, searching YouTube, and surfing the web, while also providing intelligent responses to your questions and requests.
 
 ## Features
 
-- 🧠 Powered by OpenAI's GPT-4o for intelligent conversations
+- 🧠 Powered by Groq's fast LLM inference for quick and intelligent conversations
 - 💬 User-friendly chat interface built with Tkinter
 - 🌐 Open and navigate websites like LinkedIn, YouTube, and Google
 - 🔍 Search for videos on YouTube
@@ -34,8 +34,8 @@ A powerful personal AI assistant with a chat interface that combines web automat
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/ai-personal-assistant.git
-   cd ai-personal-assistant
+   git clone https://github.com/vishesh711/Automated-gen-AI-agents.git
+   cd Automated-gen-AI-agents
    ```
 
 2. Install required packages:
@@ -43,11 +43,18 @@ A powerful personal AI assistant with a chat interface that combines web automat
    pip install -r requirements.txt
    ```
 
-3. Configure API keys:
-   - Open `config.py` and add your API keys:
-     - OpenAI API key (for GPT-4o)
-     - OpenWeatherMap API key (for weather information)
-     - News API key (for news headlines)
+3. **IMPORTANT: Configure Your Groq API Key**:
+   - Visit [Groq Console](https://console.groq.com) and create a free account
+   - Generate a new API key
+   - Open `config.py` in your editor
+   - Uncomment the `GROQ_API_KEY` line and replace `"your_groq_api_key_here"` with your actual key:
+   ```python
+   GROQ_API_KEY = "gsk_your_actual_groq_api_key_here"
+   ```
+
+4. Optional API Keys (for additional features):
+   - OpenWeatherMap API key (for weather information)
+   - News API key (for news headlines)
 4. Run the main application:
    ```
    python web_agent.py
@@ -81,6 +88,6 @@ This tool is for educational purposes. Be responsible when using web automation 
 
 ## 🙏 Acknowledgments
 
-- OpenAI for GPT API
+- Groq for fast LLM inference API
 - Selenium for web automation
 - Python community for various libraries

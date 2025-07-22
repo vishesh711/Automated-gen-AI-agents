@@ -687,14 +687,14 @@
                 
                 <form id="apiKeysForm">
                     <div class="form-group">
-                        <label for="openaiApiKey" class="form-label">OpenAI API Key</label>
+                        <label for="groqApiKey" class="form-label">Groq API Key</label>
                         <div class="api-key-container">
-                            <input type="password" id="openaiApiKey" class="form-control" placeholder="Enter your OpenAI API key">
-                            <button type="button" class="api-key-toggle" onclick="toggleApiKeyVisibility('openaiApiKey')">
+                            <input type="password" id="groqApiKey" class="form-control" placeholder="Enter your Groq API key">
+                            <button type="button" class="api-key-toggle" onclick="toggleApiKeyVisibility('groqApiKey')">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
-                        <div class="form-text">Your API key is stored securely and never shared.</div>
+                        <div class="form-text">Your API key is stored securely and never shared. Get one at <a href="https://console.groq.com/keys" target="_blank">console.groq.com</a></div>
                     </div>
                     
                     <div class="settings-actions">
@@ -856,7 +856,7 @@
             // API Keys form
             document.getElementById('apiKeysForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                const openaiApiKey = document.getElementById('openaiApiKey').value;
+                const groqApiKey = document.getElementById('groqApiKey').value;
                 
                 fetch('/api/update_api_keys', {
                     method: 'POST',
@@ -864,7 +864,7 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ 
-                        openai_api_key: openaiApiKey
+                        groq_api_key: groqApiKey
                     })
                 })
                 .then(response => response.json())
